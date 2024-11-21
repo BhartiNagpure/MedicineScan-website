@@ -11,6 +11,9 @@ module.exports = {
         background: "var(--background)",
         foreground: "var(--foreground)",
       },
+      textShadow: {
+        inner: 'inset 2px 2px 4px rgba(0, 0, 0, 0.5)', // Custom inner shadow
+      },
     },
   },
   plugins: [],

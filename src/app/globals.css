@@ -16,6 +16,13 @@
 
 body {
   color: var(--foreground);
-  background: var(--background);
+  /* background: var(--background); */
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* 
+.step {
+  background: url('./assests/wavebg.png');
+  background-position: center;
+  background-size: cover;
+} */

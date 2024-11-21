@@ -9,9 +9,12 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@zxing/browser": "^0.1.5",
+    "html5-qrcode": "^2.3.8",
+    "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
     "react-dom": "19.0.0-rc-66855b96-20241106",
-    "next": "15.0.3"
+    "react-qr-scanner": "^1.0.0-alpha.11"
   },
   "devDependencies": {
     "postcss": "^8",

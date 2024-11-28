@@ -301,7 +301,11 @@ function Scanner({ setShowScanner }) {
                     <div className="result-container bg-white p-6 rounded-lg shadow-lg max-w-lg w-full relative">
                         <button
                             className="absolute top-2 right-2 text-red-500 hover:text-red-700"
-                            onClick={() => setScanResult(null)}
+                            onClick={() => {
+                                setScanResult(null); // Clear the scan result
+                                stopScanning();      // Stop the scanning process
+                            }}
+
                         >
                             ✖
                         </button>

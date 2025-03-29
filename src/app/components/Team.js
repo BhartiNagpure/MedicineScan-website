@@ -50,8 +50,13 @@ const teamMembers = [
 const Team = () => {
     return (
         <section id="team">
-            <div className="container mx-auto mt-16   sm:px-2 md:px-6 lg:px-10">
-                <h2 className="text-4xl font-bold mb-6 text-center text-sky-600">OUR TEAM</h2>
+            <div className="mt-16 container mx-auto max-w-7xl">
+                <div className="inline-block text-center mb-8">
+                    <h2 className="text-4xl text-center font-bold text-sky-800 relative">
+                        OUR TEAM
+                        <span className="absolute bottom-0 left-0 w-1/2 h-1 bg-sky-600 rounded-full"></span>
+                    </h2>
+                </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     {teamMembers.map((member) => (
                         <TeamCard

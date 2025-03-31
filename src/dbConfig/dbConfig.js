@@ -2,10 +2,11 @@ import mongoose from 'mongoose';
 
 
 const DB_NAME = 'Medicine-Data';
+// MONGO_URL = mongodb+srv://bhartinagpure2409:123bharti@cluster0.5hu6t.mongodb.net/Medicine-Data?retryWrites=true&w=majority
 
 export async function connect() {
     try {
-        const response = await mongoose.connect(process.env.MONGO_URL);
+        const response = await mongoose.connect(`mongodb+srv://bhartinagpure2409:123bharti@cluster0.5hu6t.mongodb.net/Medicine-Data?retryWrites=true&w=majority`);
         // const response = await mongoose.connect(`mongodb+srv://bhartinagpure2409:123bharti@cluster0.5hu6t.mongodb.net/${DB_NAME}`)
         // const connection = mongoose.connection;
         // console.log('Connected to MongoDB', response);

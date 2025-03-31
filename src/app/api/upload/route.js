@@ -106,6 +106,7 @@ try {
 export async function POST(request) {
     try {
         const formData = await request.formData();
+        console.log("Form data received:", formData);
         const name = formData.get('name');
         const barcode = formData.get('barcode');
         
@@ -121,8 +122,8 @@ export async function POST(request) {
             barcode: barcode,
             description: formData.get('description'),
             price: formData.get('price'),
-            expiration_date: formData.get('expiry_date'),
-            dose: formData.get('dose')
+            dose: formData.get('dose'),
+            expiry: formData.get('expiry'),
         });
 
         if (!medicineCreated) {

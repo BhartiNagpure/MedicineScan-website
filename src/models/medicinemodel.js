@@ -16,16 +16,15 @@ const medicineSchema = new mongoose.Schema({
         required: true
     },
     price: {
-        type: Number,
+        type: String,
         required: true,
-        min: 0
     },
     dose: {
         type: String,
         required: true
     },
-    expiration_date: {
-        type: Date,
+    expiry: {
+        type: String,
         required: true
     },
     created_at: {

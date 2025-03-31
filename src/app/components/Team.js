@@ -50,7 +50,7 @@ const teamMembers = [
 const Team = () => {
     return (
         <section id="team">
-            <div className="mt-16 container mx-auto max-w-7xl">
+            <div className="mt-16 container mx-auto max-w-7xl px-2">
                 <div className="inline-block text-center mb-8">
                     <h2 className="text-4xl text-center font-bold text-sky-800 relative">
                         OUR TEAM

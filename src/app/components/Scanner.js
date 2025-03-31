@@ -12,7 +12,7 @@ function Scanner({ setShowScanner }) {
     const [isScanning, setIsScanning] = useState(false);
     const [fetchedData, setFetchedData] = useState(null);
     const scannerRef = useRef(null);
-// console.log(`Scanner component rendered`, scanResult)
+    // console.log(`Scanner component rendered`, scanResult)
 
     // const startCameraScanner = () => {
     //     const codeReader = new BrowserMultiFormatReader();
@@ -40,20 +40,20 @@ function Scanner({ setShowScanner }) {
     //         console.error("Camera initialization error:", err);
     //     });
     // };
-   
 
-    
+
+
     const startCameraScanner = () => {
         return new Promise((resolve, reject) => {
             const codeReader = new BrowserMultiFormatReader();
             scannerRef.current = codeReader;
-
+             setFetchedData(null)
             codeReader.decodeFromVideoDevice(
                 undefined, // Use default camera
                 'reader',
                 async (result, error) => {
                     if (result) {
-                        stopScanning(); 
+                        stopScanning();
                         console.log("Code detected:", result.text);
                         setScanResult(result.text);
                         // Stop scanning immediately after detection
@@ -76,12 +76,12 @@ function Scanner({ setShowScanner }) {
 
     const stopScanning = () => {
         setIsScanning(false);  // Set scanning state to false
-    
+
         // If the scanner has a stop method (e.g., for barcode scanner)
         if (scannerRef.current && typeof scannerRef.current.stop === 'function') {
             scannerRef.current.stop();
         }
-    
+
         // Stopping the video stream if it exists
         const videoElement = document.getElementById('reader');  // Assuming 'reader' is your video element ID
         if (videoElement) {
@@ -92,7 +92,7 @@ function Scanner({ setShowScanner }) {
             videoElement.srcObject = null;  // Disconnect the video element from the stream
         }
     };
-    
+
 
     const scanFromGallery = async (event) => {
         const file = event.target.files[0];
@@ -156,11 +156,20 @@ function Scanner({ setShowScanner }) {
             stopScanning();
 
             // If text was found, treat it as a barcode and fetch data
+            // if (text.trim()) {
+            //     setScanResult(text.trim());
+            //     await fetchQrData(text.trim());
+            // } else {
+            //     toast.error("No text detected");
+            // }
             if (text.trim()) {
                 setScanResult(text.trim());
-                await fetchQrData(text.trim());
-            } else {
-                toast.error("No text detected");
+                const words = text.trim().split(' ');
+                for (const word of words) {
+                    if (word) {
+                        await fetchQrData(word);
+                    }
+                }
             }
 
         } catch (error) {
@@ -186,18 +195,18 @@ function Scanner({ setShowScanner }) {
     // };
 
 
-     const fetchQrData = async (name) => {
+    const fetchQrData = async (name) => {
         try {
             if (!name) {
                 console.error("Barcode number is empty");
                 return;
             }
-console.log("name ",name)
+            console.log("name ", name)
             // Sanitize and normalize the text
             // const decodedName = encodeURIComponent(name);
             // console.log("decodenam ",decodedName); // Debugging line
-            const extractedName = name.match(/^[a-zA-Z0-9]+/)[0].trim();    console.log("topass name:", extractedName); // Debugging line
-            const response = await fetch(`/api/getmedicinename?name=${extractedName}`);
+            const extractedName = name.match(/^[a-zA-Z0-9]+/)[0].trim(); console.log("topass name:", extractedName);
+            const response = await fetch(`/api/getmedicinename?search=${extractedName}`);
 
             if (!response.ok) {
                 throw new Error("Failed to fetch medicine data");
@@ -208,7 +217,7 @@ console.log("name ",name)
             // Set the fetched data to display on the frontend
             setFetchedData(data);
             stopScanning(); // Stop scanning process
-            
+
             // Explicitly stop video tracks
             const videoElement = document.getElementById('reader');
             if (videoElement && videoElement.srcObject) {
@@ -216,7 +225,7 @@ console.log("name ",name)
                 tracks.forEach(track => track.stop());
                 videoElement.srcObject = null;
             }
-            
+
         } catch (error) {
             toast.error("Error fetching medicine data");
             console.error("Error fetching medicine data:", error);
@@ -242,7 +251,7 @@ console.log("name ",name)
     //         // Set the fetched data to display on the frontend
     //         setFetchedData(data);
     //         stopScanning(); // Stop scanning process
-            
+
     //         // Explicitly stop video tracks
     //         const videoElement = document.getElementById('reader');
     //         if (videoElement && videoElement.srcObject) {
@@ -250,14 +259,14 @@ console.log("name ",name)
     //             tracks.forEach(track => track.stop());
     //             videoElement.srcObject = null;
     //         }
-            
+
     //     } catch (error) {
     //         toast.error("Error fetching medicine data");
     //         console.error("Error fetching medicine data:", error);
     //     }
     // };
 
-
+console.log(fetchedData, "fetchedData")
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
             <div className="flex justify-center items-center space-x-4 py-8">
@@ -267,7 +276,7 @@ console.log("name ",name)
                         <div className="scanner-container bg-white p-6 rounded-lg shadow-lg max-w-lg min-w-[400px w-full relative">
                             <button
                                 className="absolute top-2 right-2 text-red-500"
-                                onClick={() => {setShowScanner(false); stopScanning()}}
+                                onClick={() => { setShowScanner(false); stopScanning() }}
                             >
                                 ✖
                             </button>
@@ -276,14 +285,14 @@ console.log("name ",name)
                                 <div className="mt-4">
                                     {isScanning ? (
                                         <button
-                                            onClick={() => stopScanning() }
+                                            onClick={() => stopScanning()}
                                             className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
                                         >
                                             Stop Scanning
                                         </button>
                                     ) : (
                                         <button
-                                        onClick={() => scanTextFromCamera()}
+                                            onClick={() => scanTextFromCamera()}
                                             // onClick={startCameraScanner}
                                             className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
                                         >
@@ -335,7 +344,7 @@ console.log("name ",name)
                             <button
                                 className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                                 onClick={() => {
-                                    setShowScanner(false) ;
+                                    setShowScanner(false);
                                     stopScanning()
                                     window.location.reload();// Clear the scan result    
                                 }}
@@ -351,13 +360,13 @@ console.log("name ",name)
                                         <p><strong>Barcode:</strong> {fetchedData.barcode}</p>
                                         <p><strong>Description:</strong> {fetchedData.description}</p>
                                         <p><strong>Dosage:</strong> {fetchedData.dose}</p>
-                                        <p><strong>Price:</strong> {fetchedData.price} Rs</p>
-                                        <p><strong>Expiration Date:</strong> {new Date(fetchedData.expiration_date).toLocaleDateString()}</p>
+                                        <p><strong>Price:</strong> ₹ {fetchedData.price} </p>
+                                        <p><strong>Expiry Date :</strong>{fetchedData.expiry}</p>
                                     </div>
                                 </div>
                             )}
 
-                            <p className="text-gray-700">
+                            {/* <p className="text-gray-700">
                                 <a
                                     href={scanResult}
                                     className="text-blue-500 hover:text-blue-700 underline"
@@ -366,11 +375,11 @@ console.log("name ",name)
                                 >
                                     {scanResult}
                                 </a>
-                            </p>
+                            </p> */}
                         </div>
                     )}
 
-              
+
             </div>
         </div>
     );

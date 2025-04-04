@@ -1,53 +1,26 @@
-
-
 "use client";
-import { Html5Qrcode } from "html5-qrcode";
 import { useEffect, useState, useRef } from "react";
 import { BrowserMultiFormatReader, mScannerView } from '@zxing/browser';
 import { toast } from 'react-hot-toast';
 import Tesseract from "tesseract.js";
+import { useSpeech } from "react-text-to-speech";
+import { Speaker, Pause, Square } from 'lucide-react';
+
 
 function Scanner({ setShowScanner }) {
     const [scanResult, setScanResult] = useState(null);
     const [isScanning, setIsScanning] = useState(false);
     const [fetchedData, setFetchedData] = useState(null);
     const scannerRef = useRef(null);
-    // console.log(`Scanner component rendered`, scanResult)
 
-    // const startCameraScanner = () => {
-    //     const codeReader = new BrowserMultiFormatReader();
-    //     scannerRef.current = codeReader;
-
-    //     codeReader.decodeFromVideoDevice(
-    //         undefined, // Use default camera
-    //         'reader',
-    //         async (result, error) => {
-    //             if (result) {
-    //                 stopScanning(); 
-    //                 console.log("Code detected:", result.text);
-    //                 setScanResult(result.text);
-    //                // Stop scanning immediately after detection
-    //                 await fetchQrData(result.text);
-    //             }
-    //             if (error && !(error instanceof Error)) {
-    //                 console.error("Scanning error:", error);
-    //             }
-    //         }
-    //     ).then(() => {
-    //         setIsScanning(true);
-    //     }).catch(err => {
-    //         setIsScanning(false)
-    //         console.error("Camera initialization error:", err);
-    //     });
-    // };
-
+   
 
 
     const startCameraScanner = () => {
         return new Promise((resolve, reject) => {
             const codeReader = new BrowserMultiFormatReader();
             scannerRef.current = codeReader;
-             setFetchedData(null)
+            setFetchedData(null)
             codeReader.decodeFromVideoDevice(
                 undefined, // Use default camera
                 'reader',
@@ -155,13 +128,6 @@ function Scanner({ setShowScanner }) {
             URL.revokeObjectURL(imageUrl);
             stopScanning();
 
-            // If text was found, treat it as a barcode and fetch data
-            // if (text.trim()) {
-            //     setScanResult(text.trim());
-            //     await fetchQrData(text.trim());
-            // } else {
-            //     toast.error("No text detected");
-            // }
             if (text.trim()) {
                 setScanResult(text.trim());
                 const words = text.trim().split(' ');
@@ -178,21 +144,6 @@ function Scanner({ setShowScanner }) {
             stopScanning();
         }
     };
-
-
-    // const scanFromGallery = async (event) => {
-    //     const file = event.target.files[0];
-    //     if (!file) return;
-
-    //     const scanner = new Html5Qrcode("reader");
-    //     try {
-    //         const result = await scanner.scanFile(file, true); // `true` to allow cross-origin images
-    //         console.log("QR code from file:", result);
-    //         setScanResult(result);
-    //     } catch (err) {
-    //         console.error("Error scanning file:", err);
-    //     }
-    // };
 
 
     const fetchQrData = async (name) => {
@@ -216,6 +167,7 @@ function Scanner({ setShowScanner }) {
 
             // Set the fetched data to display on the frontend
             setFetchedData(data);
+            setIsScanning(false);
             stopScanning(); // Stop scanning process
 
             // Explicitly stop video tracks
@@ -232,43 +184,32 @@ function Scanner({ setShowScanner }) {
         }
     };
 
+ 
 
-    // const fetchQrData = async (barcodeNumber) => {
-    //     try {
-    //         if (!barcodeNumber) {
-    //             console.error("Barcode number is empty");
-    //             return;
-    //         }
 
-    //         const response = await fetch(`/api/getmedicine?barcode=${encodeURIComponent(barcodeNumber)}`);
+    const {
+        Text,
+        speechStatus,
+        isInQueue,
+        start,
+        pause,
+        stop,
+    } = useSpeech({
+        text: fetchedData ?
+            `Name: ${fetchedData.name}. 
+                 Description: ${fetchedData.description}. 
+                 Dosage: ${fetchedData.dose}. 
+                 Price: ${fetchedData.price} rupees. 
+                 Expiry Date: ${fetchedData.expiry}`
+            : ''
+    });
 
-    //         if (!response.ok) {
-    //             throw new Error("Failed to fetch medicine data");
-    //         }
 
-    //         const data = await response.json();
 
-    //         // Set the fetched data to display on the frontend
-    //         setFetchedData(data);
-    //         stopScanning(); // Stop scanning process
-
-    //         // Explicitly stop video tracks
-    //         const videoElement = document.getElementById('reader');
-    //         if (videoElement && videoElement.srcObject) {
-    //             const tracks = videoElement.srcObject.getTracks();
-    //             tracks.forEach(track => track.stop());
-    //             videoElement.srcObject = null;
-    //         }
-
-    //     } catch (error) {
-    //         toast.error("Error fetching medicine data");
-    //         console.error("Error fetching medicine data:", error);
-    //     }
-    // };
-
-console.log(fetchedData, "fetchedData")
+    console.log(fetchedData, "fetchedData")
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
+        
             <div className="flex justify-center items-center space-x-4 py-8">
                 {/* QR Code Scanner Block */}
                 {
@@ -301,36 +242,6 @@ console.log(fetchedData, "fetchedData")
                                     )}
                                 </div>
 
-                                {/* /* Upload File for Gallery Scanner */}
-                                {/* <div className="mt-4">
-                        <label
-                            htmlFor="file-upload"
-                            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 cursor-pointer"
-                        >
-                            Upload from Gallery
-                        </label>
-                        <input
-                            id="file-upload"
-                            type="file"
-                            accept="image/*"
-                            className="hidden"
-                            onChange={(e) => {
-                                const file = e.target.files[0];
-                                if (file) {
-                                    const reader = new FileReader();
-                                    reader.onload = (e) => {
-                                        const preview = document.getElementById('preview');
-                                        if (preview) {
-                                            preview.src = e.target.result;
-                                            preview.classList.remove('hidden');
-                                        }
-                                    };
-                                    reader.readAsDataURL(file);
-                                    scanFromGallery(e);
-                                }
-                            }}
-                        />
-                    </div> */}
 
                                 {/* Image Preview */}
                                 <img id="preview" className="mt-4 max-w-full h-48 object-contain hidden" alt="Preview" />
@@ -341,6 +252,7 @@ console.log(fetchedData, "fetchedData")
                         </div>
                     ) : (
                         <div className="result-container bg-white p-6 rounded-lg shadow-lg min-w-[400px] w-full relative">
+
                             <button
                                 className="absolute top-2 right-2 text-red-500 hover:text-red-700"
                                 onClick={() => {
@@ -356,32 +268,47 @@ console.log(fetchedData, "fetchedData")
                             {fetchedData && (
                                 <div>
                                     <div className="space-y-2">
-                                        <p><strong>Name:</strong> {fetchedData.name}</p>
-                                        <p><strong>Barcode:</strong> {fetchedData.barcode}</p>
-                                        <p><strong>Description:</strong> {fetchedData.description}</p>
-                                        <p><strong>Dosage:</strong> {fetchedData.dose}</p>
-                                        <p><strong>Price:</strong> ₹ {fetchedData.price} </p>
-                                        <p><strong>Expiry Date :</strong>{fetchedData.expiry}</p>
+                                        <p><strong>name:</strong> {fetchedData.name}</p>
+                                        <p><strong>barcode:</strong> {fetchedData.barcode}</p>
+                                        <p><strong>description:</strong> {fetchedData.description}</p>
+                                        <p><strong>dosage:</strong> {fetchedData.dose}</p>
+                                        <p><strong>price:</strong> ₹ {fetchedData.price}</p>
+                                        <p><strong>expiryDate:</strong> {fetchedData.expiry}</p>
+                                    </div>
+                                    <div className="flex items-center gap-4 mt-4">
+                                        <button
+                                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-100 hover:bg-blue-200 transition-colors"
+                                            onClick={speechStatus !== "started" ? start : pause}
+                                        >
+                                            {speechStatus !== "started" ? (
+                                                <>
+                                                    <Speaker size={24} className="text-blue-600" />
+                                                    <span className="text-blue-600">Speak</span>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <Pause size={24} className="text-blue-600" />
+                                                    <span className="text-blue-600">Pause</span>
+                                                </>
+                                            )}
+                                        </button>
+
+                                        <button
+                                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-100 hover:bg-red-200 transition-colors"
+                                            onClick={stop}
+                                        >
+                                            <Square size={24} className="text-red-600" />
+                                            <span className="text-red-600">Stop</span>
+                                        </button>
                                     </div>
                                 </div>
                             )}
-
-                            {/* <p className="text-gray-700">
-                                <a
-                                    href={scanResult}
-                                    className="text-blue-500 hover:text-blue-700 underline"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                >
-                                    {scanResult}
-                                </a>
-                            </p> */}
                         </div>
-                    )}
-
-
+                    )
+                }
             </div>
         </div>
+
     );
 }
 

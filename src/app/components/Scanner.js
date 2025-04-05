@@ -5,16 +5,16 @@ import { toast } from 'react-hot-toast';
 import Tesseract from "tesseract.js";
 import { useSpeech } from "react-text-to-speech";
 import { Speaker, Pause, Square } from 'lucide-react';
+import { useSpeechSynthesis } from 'react-speech-kit';
 
 
 function Scanner({ setShowScanner }) {
     const [scanResult, setScanResult] = useState(null);
     const [isScanning, setIsScanning] = useState(false);
     const [fetchedData, setFetchedData] = useState(null);
+    const [isSpeaking, setIsSpeaking] = useState(false);
     const scannerRef = useRef(null);
-
-   
-
+    const { speak, cancel } = useSpeechSynthesis();
 
     const startCameraScanner = () => {
         return new Promise((resolve, reject) => {
@@ -184,32 +184,49 @@ function Scanner({ setShowScanner }) {
         }
     };
 
- 
-
-
-    const {
-        Text,
-        speechStatus,
-        isInQueue,
-        start,
-        pause,
-        stop,
-    } = useSpeech({
-        text: fetchedData ?
-            `Name: ${fetchedData.name}. 
-                 Description: ${fetchedData.description}. 
-                 Dosage: ${fetchedData.dose}. 
-                 Price: ${fetchedData.price} rupees. 
-                 Expiry Date: ${fetchedData.expiry}`
-            : ''
-    });
 
 
 
-    console.log(fetchedData, "fetchedData")
+    // const {
+    //     Text,
+    //     speechStatus,
+    //     isInQueue,
+    //     start,
+    //     pause,
+    //     stop,
+    // } = useSpeech({
+    //     text: fetchedData ?
+    //         `Name: ${fetchedData.name}. 
+    //              Description: ${fetchedData.description}. 
+    //              Dosage: ${fetchedData.dose}. 
+    //              Price: ${fetchedData.price} rupees. 
+    //              Expiry Date: ${fetchedData.expiry}`
+    //         : ''
+    // });
+    const readFetchedData = () => {
+        if (isSpeaking) {
+            cancel();
+            setIsSpeaking(false);
+            return;
+        }
+        const textToSpeak = `
+          Name: ${fetchedData.name}
+          Description: ${fetchedData.description}
+          Dosage: ${fetchedData.dose}
+          Price: ₹ ${fetchedData.price}
+          Expiry Date: ${fetchedData.expiry}
+        `;
+        setIsSpeaking(true);
+        speak({ 
+            text: textToSpeak,
+            onEnd: () => setIsSpeaking(false)
+        });
+        speak({ text: textToSpeak });
+    };
+
     return (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 ">
-        
+
             <div className="flex justify-center items-center space-x-4 py-8">
                 {/* QR Code Scanner Block */}
                 {
@@ -217,7 +234,7 @@ function Scanner({ setShowScanner }) {
                         <div className="scanner-container bg-white p-6 rounded-lg shadow-lg max-w-lg min-w-[400px w-full relative">
                             <button
                                 className="absolute top-2 right-2 text-red-500"
-                                onClick={() => { setShowScanner(false); stopScanning() }}
+                                onClick={() => { setShowScanner(false); stopScanning();  cancel(); }}
                             >
                                 ✖
                             </button>
@@ -264,7 +281,7 @@ function Scanner({ setShowScanner }) {
                             >
                                 ✖
                             </button>
-                            <h3 className="text-xl font-bold mb-2 text-gray-500">Scan Result:</h3>
+                            <h3 className="text-xl max-w-[500px] font-bold mb-2 text-gray-500">Scan Result:</h3>
                             {fetchedData && (
                                 <div>
                                     <div className="space-y-2">
@@ -275,7 +292,24 @@ function Scanner({ setShowScanner }) {
                                         <p><strong>price:</strong> ₹ {fetchedData.price}</p>
                                         <p><strong>expiryDate:</strong> {fetchedData.expiry}</p>
                                     </div>
-                                    <div className="flex items-center gap-4 mt-4">
+                                  <div className="flex items-center gap-4 mt-4">
+                                  <button onClick={readFetchedData} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-100 hover:bg-blue-200 transition-colors">
+                                    <Speaker size={24} className="text-blue-600" />
+                                    <span className="text-blue-600">Speak</span>
+                                    </button>
+                                    <button
+                                            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-100 hover:bg-red-200 transition-colors"
+                                            onClick={cancel}
+                                        >
+                                            <Square size={24} className="text-red-600" />
+                                            <span className="text-red-600">Stop</span>
+                                        </button>
+                                    </div>
+                                    {/* <button onClick={readFetchedData} className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-100 hover:bg-blue-200 transition-colors">
+                                    <Speaker size={24} className="text-blue-600" />
+                                    <span className="text-blue-600">Speak</span>
+                                    </button> */}
+                                    {/* <div className="flex items-center gap-4 mt-4">
                                         <button
                                             className="flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-100 hover:bg-blue-200 transition-colors"
                                             onClick={speechStatus !== "started" ? start : pause}
@@ -300,7 +334,7 @@ function Scanner({ setShowScanner }) {
                                             <Square size={24} className="text-red-600" />
                                             <span className="text-red-600">Stop</span>
                                         </button>
-                                    </div>
+                                    </div> */}
                                 </div>
                             )}
                         </div>

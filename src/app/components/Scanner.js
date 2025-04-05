@@ -3,7 +3,7 @@ import { useEffect, useState, useRef } from "react";
 import { BrowserMultiFormatReader, mScannerView } from '@zxing/browser';
 import { toast } from 'react-hot-toast';
 import Tesseract from "tesseract.js";
-import { useSpeech } from "react-text-to-speech";
+// import { useSpeech } from "react-text-to-speech";
 import { Speaker, Pause, Square } from 'lucide-react';
 import { useSpeechSynthesis } from 'react-speech-kit';
 

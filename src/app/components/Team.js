@@ -1,48 +1,55 @@
 // pages/team.js
 import TeamCard from './TeamCard';
-import avtar from '../assests/maleavtar.png';
-import femalevatar from "../assests/femaleavtar.png"
+// import avtar from '../../assests/maleavtar.png';
+// import femalevatar from "../../assests/femaleavtar.png";
+import krutika from '../../app/assests/team/krutika.jpeg';
+import rakhi from '../../app/assests/team/rakhi.jpeg';
+import shravani from '../../app/assests/team/shravani.jpeg';
+import tanushree from '../../app/assests/team/tanushree.jpeg';
+import arya from '../../app/assests/team/arya.jpeg';
+import gauri from '../../app/assests/team/gauri.jpeg';
+
 const teamMembers = [
     {
         id: 1,
         name: 'Arya Nandu Buradkar',
         branch: "Dept. of Computer Engineering ",
-        avatar: femalevatar,
+        avatar: arya,
         contact: 'john@example.com',
     },
     {
         id: 2,
         name: 'Krutika Arun Atkare ',
         branch: "Dept. of Computer Engineering ",
-        avatar: femalevatar,
+        avatar: krutika,
         contact: 'jane@example.com',
     },
     {
         id: 3,
         name: 'Shravani Rajesh Meshram ',
         branch: "Dept. of Computer Engineering ",
-        avatar: femalevatar,
+        avatar: shravani,
         contact: 'mike@example.com',
     },
     {
         id: 4,
         name: 'Rakhi Mohan Ardak',
         branch: "Dept. of Computer Engineering ",
-        avatar: femalevatar,
+        avatar: rakhi,
         contact: 'emily@example.com',
     },
     {
         id: 5,
         name: 'Tanushree Atul Saudagar',
         branch: "Dept. of Computer Engineering ",
-        avatar: femalevatar,
+        avatar: tanushree,
         contact: 'chris@example.com',
     },
     {
         id: 6,
         name: 'Gauri Prashant Nunnewar',
         branch: "Dept. of Computer Engineering ",
-        avatar: femalevatar,
+        avatar: gauri,
         contact: 'sarah@example.com',
     },
 ];

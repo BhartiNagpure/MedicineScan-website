@@ -10,9 +10,7 @@ const TeamCard = ({ avatar, name, contact }) => {
                     <Image
                         src={avatar}
                         alt={`${name}'s avatar`}
-                        width={100}
-                        height={100}
-                        className="rounded-full border-4 border-white shadow-lg hover:scale-105 transition-transform duration-300"
+                        className="w-28 h-28 rounded-full border-4 border-white shadow-lg hover:scale-105 transition-transform duration-300"
                     />
                 </div>
                 <div className="mt-4 text-center">

@@ -29,6 +29,7 @@
     "react-i18next": "^15.4.1",
     "react-qr-scanner": "^1.0.0-alpha.11",
     "react-toastify": "^11.0.5",
+    "sharp": "^0.28.3",
     "tesseract.js": "^6.0.0"
   },
   "devDependencies": {
